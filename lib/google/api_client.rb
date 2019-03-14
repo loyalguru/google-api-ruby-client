@@ -595,6 +595,11 @@ module Google
       Retriable.retriable :tries => tries, 
                           :on => [TransmissionError], 
                           :interval => lambda {|attempts| (2 ** attempts) + rand} do
+
+        if request.headers["User-Agent"]
+          request.headers["User-Agent"].gsub!("\n", " ")
+        end
+
         result = request.send(connection, true)
 
         case result.status
